@@ -1,0 +1,21 @@
+name: Build Windows portable EXE
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install builder
+        run: python -m pip install pyinstaller
+      - name: Build GUI application
+        run: pyinstaller --clean --onefile --windowed --name ConfigDriftLite app.py
+      - name: Upload unsigned executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: ConfigDriftLite-Windows-unsigned
+          path: dist/ConfigDriftLite.exe
+          if-no-files-found: error
